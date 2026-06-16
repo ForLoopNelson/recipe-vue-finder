@@ -66,17 +66,37 @@
 
         <h2>{{ selectedRecipe.strMeal }}</h2>
 
+        <h3>Ingredients</h3>
+
+<ul class="ingredients-list">
+  <li
+    v-for="(item, index) in ingredients"
+    :key="index"
+  >
+    <span class="measure">{{ item.measure }}</span>
+    <span class="ingredient">{{ item.ingredient }}</span>
+  </li>
+</ul>
+
         <h3>Instructions</h3>
 
-        <p>{{ selectedRecipe.strInstructions }}</p>
+<ol class="instructions-list">
+  <li
+    v-for="(step, index) in instructionSteps"
+    :key="index"
+  >
+    {{ step }}
+  </li>
+</ol>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useMeals } from "./composables/useMeals";
+import { ref, computed } from "vue";
+import { useMeals } from "@/composables/useMeals";
+
 
 const searchTerm = ref("");
 const searched = ref(false);
@@ -93,6 +113,35 @@ const handleSearch = async () => {
   searched.value = true;
   await searchRecipes(searchTerm.value);
 };
+
+const instructionSteps = computed(() => {
+  if (!selectedRecipe.value?.strInstructions) return [];
+
+  return selectedRecipe.value.strInstructions
+    .split(". ")
+    .filter(step => step.trim())
+    .map(step => step.endsWith(".") ? step : step + ".");
+});
+
+const ingredients = computed(() => {
+  if (!selectedRecipe.value) return [];
+
+  const list = [];
+
+  for (let i = 1; i <= 20; i++) {
+    const ingredient = selectedRecipe.value[`strIngredient${i}`];
+    const measure = selectedRecipe.value[`strMeasure${i}`];
+
+    if (ingredient && ingredient.trim()) {
+      list.push({
+        ingredient: ingredient.trim(),
+        measure: measure ? measure.trim() : "",
+      });
+    }
+  }
+
+  return list;
+});
 </script>
 
 <style>
@@ -104,7 +153,7 @@ const handleSearch = async () => {
 
 body {
   background: #f5fff5;
-  font-family: Arial, sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .app {
@@ -121,6 +170,8 @@ header {
 header h1 {
   color: #2e7d32;
   font-size: 3rem;
+  font-family:"Bodoni Moda SC";
+  font-weight: 800;
 }
 
 header p {
@@ -189,6 +240,47 @@ header p {
 
 .card-content h3 {
   color: #2e7d32;
+}
+
+.ingredients-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 2rem;
+}
+
+.ingredients-list li {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.measure {
+  min-width: 120px;
+  font-weight: 700;
+  color: #2e7d32; /* green */
+}
+
+.ingredient {
+  color: #333;
+}
+
+.instructions {
+  line-height: 1.8;
+  font-size: 1rem;
+  color: #333;
+  margin-top: 1rem;
+}
+
+.instructions-list {
+  margin-top: 1rem;
+  padding-left: 1.5rem;
+}
+
+.instructions-list li {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+  color: #333;
 }
 
 .loading {
