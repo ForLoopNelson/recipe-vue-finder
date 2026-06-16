@@ -8,11 +8,11 @@
     <div class="search-container">
       <input
         v-model="searchTerm"
-        @keyup.enter="searchRecipes"
+        @keyup.enter="handleSearch"
         placeholder="Enter ingredient (chicken, salmon, beef...)"
       />
 
-      <button @click="searchRecipes">
+      <button @click="handleSearch">
         Search
       </button>
     </div>
@@ -76,47 +76,22 @@
 
 <script setup>
 import { ref } from "vue";
+import { useMeals } from "./composables/useMeals";
 
 const searchTerm = ref("");
-const recipes = ref([]);
-const loading = ref(false);
 const searched = ref(false);
-const selectedRecipe = ref(null);
 
-const searchRecipes = async () => {
-  if (!searchTerm.value.trim()) return;
+const {
+  recipes,
+  loading,
+  selectedRecipe,
+  searchRecipes,
+  getRecipeDetails,
+} = useMeals();
 
-  loading.value = true;
+const handleSearch = async () => {
   searched.value = true;
-
-  try {
-    const response = await fetch(
-      `https://www.themealdb.com/api/json/v1/1/filter.php?i=${searchTerm.value}`
-    );
-
-    const data = await response.json();
-
-    recipes.value = data.meals || [];
-  } catch (error) {
-    console.error(error);
-    recipes.value = [];
-  }
-
-  loading.value = false;
-};
-
-const getRecipeDetails = async (id) => {
-  try {
-    const response = await fetch(
-      `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
-    );
-
-    const data = await response.json();
-
-    selectedRecipe.value = data.meals[0];
-  } catch (error) {
-    console.error(error);
-  }
+  await searchRecipes(searchTerm.value);
 };
 </script>
 
