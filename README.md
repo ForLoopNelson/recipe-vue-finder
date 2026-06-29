@@ -1,14 +1,15 @@
 # Recipe Finder
 ### Todo's
--[] Clean up UI
--[] Clean up cooking instructions so it's not just a jumbled paragraph
--[] Mobile Formatting
+- [ ] Clean up UI
+- [x] Clean up cooking instructions so it's not just a jumbled paragraph
+- [x] Mobile Formatting
+- [ ] Test deployed site on mobile devices
 
 ## Things to add
--[] Local Storage so users can save favorite recipes
--[] Light and dark theme
--[] Create compostable or service file to handle most JS
--[] Move most inline CSS to separate file
+- [ ] Local Storage so users can save favorite recipes
+- [ ] Light and dark theme
+- [x] Create compostable or service file to handle most JS
+- [x] Move most inline CSS to separate file
 
 
 ## Recipe-Vue
